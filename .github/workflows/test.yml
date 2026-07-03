@@ -1,0 +1,45 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+
+    - name: Run Python Test
+      working-directory: ./python
+      run: |
+        echo -e "(141) 592-6535\nexit" | python3 main.py
+
+    - name: Run JavaScript Test
+      working-directory: ./javascript
+      run: |
+        echo -e "(141) 592-6535\nexit" | node index.js
+
+    - name: Run Golang Test
+      working-directory: ./golang
+      run: |
+        echo -e "(141) 592-6535\nexit" | go run main.go
