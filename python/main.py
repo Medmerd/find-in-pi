@@ -2,6 +2,7 @@ import os
 import sys
 import mmap
 import time
+import json
 
 # Global variables to hold mapping descriptors
 piFile = None
@@ -10,7 +11,9 @@ piMap = None
 # Write the sections between 2 timers
 def writeTime(startTime, sectionName):
     endTime = time.perf_counter()
-    print(f"{sectionName} time: {endTime - startTime} seconds")
+    runtime = endTime - startTime
+    print(f"{sectionName} time: {runtime} seconds")
+    return runtime
 
 def cleanInput(userInput):
     """Remove all non-numeric characters from the input using fast digit filtering."""
@@ -32,7 +35,6 @@ def readMappedFile(filename):
     piFile = open(filename, mode="rb")
     # Create a read-only memory map of the entire file
     piMap = mmap.mmap(piFile.fileno(), length=0, access=mmap.ACCESS_READ)
-   
 
 def closeMappedFile():
     global piFile, piMap
@@ -40,6 +42,27 @@ def closeMappedFile():
         piMap.close()
     if piFile:
         piFile.close()
+
+def writeLogFile(number, index, match, runtime):
+    filePath = "log.json"
+
+    if os.path.exists(filePath):
+        with open(filePath, "r", encoding="utf-8") as file:
+            try:
+                data = json.load(file)
+            except json.JSONDecodeError:
+                data = {}
+    else:
+        data = {}
+
+    data[number] = {
+        "index": index,
+        "digits": match,
+        "time": runtime
+    }
+
+    with open(filePath, "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=4)
 
 def splitNumber(phoneDigits):
     # Pre-convert phoneDigits to bytes to extract byte substrings directly
@@ -118,10 +141,11 @@ def main():
             foundIndex, foundMatch = searchPhoneInPi(cleaned)
             
             # Write the time it took to search
-            writeTime(startTime, "Match Search")
+            runtime = writeTime(startTime, "Match Search")
 
             if foundMatch is not None:
                 print(f"   Found {foundMatch} (length {len(foundMatch)}) at index {foundIndex}\n")
+                writeLogFile(cleaned, foundIndex, foundMatch, runtime)
             else:
                 print("   No match found.\n")
     finally:

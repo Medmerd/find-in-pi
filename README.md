@@ -44,6 +44,7 @@ An interactive CLI application that cleans and validates a 10-digit phone number
    - Enter a phone number when prompted (e.g. `(141) 592-6535` or `123-456-7890`).
    - The script will report the first match found, its length, and its index in `pi.txt`.
    - Type `exit` or `quit` to close the program.
+   - A `log.json` file will be created in the `python/` directory to store the match results. Giving the number as the key and the match/index/time as the value. Time is the number of seconds it took to execute the search process.
 
 ---
 
