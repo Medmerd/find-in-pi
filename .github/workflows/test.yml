@@ -32,14 +32,14 @@ jobs:
     - name: Run Python Test
       working-directory: ./python
       run: |
-        echo -e "(141) 592-6535\nexit" | python3 main.py
+        echo -e "(141) 592-6535\n9887275872\nexit" | python3 main.py
 
     - name: Run JavaScript Test
       working-directory: ./javascript
       run: |
-        echo -e "(141) 592-6535\nexit" | node index.js
+        echo -e "(141) 592-6535\n9887275872\nexit" | node index.js
 
     - name: Run Golang Test
       working-directory: ./golang
       run: |
-        echo -e "(141) 592-6535\nexit" | go run main.go
+        echo -e "(141) 592-6535\n9887275872\nexit" | go run main.go
