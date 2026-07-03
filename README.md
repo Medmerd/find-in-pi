@@ -1,8 +1,10 @@
 # Phone Number Finder in Pi
 
+An interactive CLI application that cleans and validates a 10-digit phone number, breaks it down into all possible substrings of length $\ge 2$, and searches for the first occurrence of these substrings within the digits of Pi.
+
 ## Python Version
 
-An interactive CLI application that cleans and validates a 10-digit phone number, breaks it down into all possible substrings of length $\ge 2$, and searches for the first occurrence of these substrings within the digits of Pi.
+---
 
 ### Features
 
@@ -16,7 +18,7 @@ An interactive CLI application that cleans and validates a 10-digit phone number
 ### Requirements
 
 - Python 3.x
-- A text file named `pi.txt` (containing the digits of Pi) in the same directory as the script.
+- A text file named `pi.txt` (containing the digits of Pi) in the project root directory (the parent of the `python/` directory).
 
 ---
 
@@ -29,11 +31,12 @@ An interactive CLI application that cleans and validates a 10-digit phone number
    ```
 
 2. **Prepare the Data**:
-   Ensure `pi.txt` is located in the same directory as `main.py`.
+   Ensure `pi.txt` is located in the project root (one directory above `main.py`).
 
 3. **Run the Application**:
-   Execute the script using python:
+   Navigate to the `python/` directory and execute the script:
    ```bash
+   cd python
    python3 main.py
    ```
 
@@ -41,3 +44,43 @@ An interactive CLI application that cleans and validates a 10-digit phone number
    - Enter a phone number when prompted (e.g. `(141) 592-6535` or `123-456-7890`).
    - The script will report the first match found, its length, and its index in `pi.txt`.
    - Type `exit` or `quit` to close the program.
+
+---
+
+## JavaScript Version
+
+---
+
+### Requirements
+
+- Node.js (version 24.0.0 or higher)
+- A text file named `pi.txt` (containing the digits of Pi) in the parent or `javascript/` directory.
+
+---
+
+### Installation & Running
+
+---
+
+1. **Verify Node.js**:
+   Make sure you have Node.js installed:
+   ```bash
+   node --version
+   ```
+
+2. **Navigate to the Directory**:
+   ```bash
+   cd javascript
+   ```
+
+3. **Run the Application**:
+   ```bash
+   node index.js
+   ```
+
+4. **Using the CLI**:
+   - Enter a phone number when prompted (e.g. `(141) 592-6535` or `123-456-7890`).
+   - The script will report the first match found, its length, and its index in `pi.txt`.
+   - Type `exit` or `quit` to close the program.
+
+---

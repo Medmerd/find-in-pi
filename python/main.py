@@ -82,7 +82,7 @@ def main():
         # Load/map the data from the file before we start
         print("=== Loading Pi Data ===")
         startTime = time.perf_counter()
-        readMappedFile("pi.txt")
+        readMappedFile("../pi.txt")
         writeTime(startTime, "Data Loaded")
         print("\n")
 
