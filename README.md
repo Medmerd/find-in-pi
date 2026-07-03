@@ -110,7 +110,7 @@ A pure Golang implementation of the application is available in the `golang/` di
    ```
 
 3. **Run the Application**:
-*Note: Will take 10-12 seconds to load the data*
+*Note: The first run will take 10-12 seconds to compile the data into `pi_index.bin`. All subsequent runs will load almost instantly.*
    ```bash
    go run main.go
    ```
@@ -158,5 +158,5 @@ Python and Javascript implementations are more than fast enough to be used for l
 
 ### Cons:
 
-* Startup Time: Building the Suffix Array in memory requires a full sweep through the data. It takes several seconds to load the CLI upon startup.
-* Memory Heavy: The Suffix Array requires an integer pointer for every character in the string. The index consumes roughly 4x to 8x the RAM of the original text file.
+* Startup Time: (Resolved) By caching the Suffix Array to disk (`pi_index.bin`), the startup time drops from 10-12 seconds down to less than a second on subsequent runs.
+* Memory Heavy: The Suffix Array requires an integer pointer for every character in the string. The serialized cache file consumes roughly 4x to 5x the disk space of the original text file.

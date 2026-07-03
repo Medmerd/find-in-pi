@@ -40,20 +40,51 @@ func main() {
 	fmt.Println("=== Loading Pi Data ===")
 	startLoad := time.Now()
 
-	// Try reading from parent directory first, then local
-	filename := "../pi.txt"
-	data, err := os.ReadFile(filename)
-	if err != nil {
-		filename = "pi.txt"
-		data, err = os.ReadFile(filename)
+	indexFilename := "pi_index.bin"
+	var index *suffixarray.Index
+
+	if _, err := os.Stat(indexFilename); err == nil {
+		fmt.Println("Loading pre-computed index from pi_index.bin...")
+		file, err := os.Open(indexFilename)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: 'pi.txt' file was not found in the current or parent directory.\n")
+			fmt.Fprintf(os.Stderr, "Error opening index file: %v\n", err)
 			os.Exit(1)
 		}
-	}
+		index = new(suffixarray.Index)
+		if err := index.Read(file); err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading index file: %v\n", err)
+			os.Exit(1)
+		}
+		file.Close()
+	} else {
+		fmt.Println("Building new index from pi.txt...")
+		// Try reading from parent directory first, then local
+		filename := "../pi.txt"
+		data, err := os.ReadFile(filename)
+		if err != nil {
+			filename = "pi.txt"
+			data, err = os.ReadFile(filename)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error: 'pi.txt' file was not found in the current or parent directory.\n")
+				os.Exit(1)
+			}
+		}
 
-	// Build the Suffix Array
-	index := suffixarray.New(data)
+		// Build the Suffix Array
+		index = suffixarray.New(data)
+		
+		// Serialize it to disk
+		file, err := os.Create(indexFilename)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating index file: %v\n", err)
+			os.Exit(1)
+		}
+		if err := index.Write(file); err != nil {
+			fmt.Fprintf(os.Stderr, "Error writing index file: %v\n", err)
+			os.Exit(1)
+		}
+		file.Close()
+	}
 
 	elapsedLoad := time.Since(startLoad).Seconds()
 	fmt.Printf("Data Loaded time: %.6f seconds\n\n", elapsedLoad)
