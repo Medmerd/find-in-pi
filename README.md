@@ -84,3 +84,79 @@ An interactive CLI application that cleans and validates a 10-digit phone number
    - Type `exit` or `quit` to close the program.
 
 ---
+
+## Golang Version
+
+A pure Golang implementation of the application is available in the `golang/` directory. This version leverages Go's built-in `index/suffixarray` to pre-compile an index of Pi in memory. While the initial data load takes a few seconds to build the Suffix Array, subsequent searches complete in mere **microseconds** due to logarithmic $O(\log N)$ binary search times.
+
+### Requirements
+
+- Go 1.x
+- A text file named `pi.txt` (containing the digits of Pi) in the project root directory (the parent of the `golang/` directory).
+
+---
+
+### Installation & Running
+
+1. **Verify Go**:
+   Make sure you have Go installed:
+   ```bash
+   go version
+   ```
+
+2. **Navigate to the Directory**:
+   ```bash
+   cd golang
+   ```
+
+3. **Run the Application**:
+*Note: Will take 10-12 seconds to load the data*
+   ```bash
+   go run main.go
+   ```
+
+4. **Using the CLI**:
+   - Enter a phone number when prompted (e.g. `(141) 592-6535` or `123-456-7890`).
+   - The script will report the first match found, its length, and its index in `pi.txt`.
+   - Type `exit` or `quit` to close the program.
+
+
+# Trade Offs
+
+Python and Javascript implementations are more than fast enough to be used for lower length PI data sets searching for a number. However the GoLang version seems to be a much more real path forward to mulit-user service and would scale to almost amount PI dataset the hardware could handle. 
+
+## Python
+
+### Pros:
+
+* Fast Startup: Memory-mapping (mmap) the file takes practically zero time, meaning the CLI is ready instantly.
+* Low Memory Overhead: Because it relies on OS-level virtual memory mapping, it uses almost no RAM beyond the actual file size.
+
+### Cons:
+
+* Search Speed: It uses a linear scan. While fast enough for 1 million digits (takes ~0.15ms), it scales linearly ($O(N)$) and would be noticeably slow on files with billions of digits.
+* Concurrency Limitations: Python's Global Interpreter Lock (GIL) prevents true multi-threading if you ever wanted to host this as a multi-user web service.
+
+## JavaScript (Node.js)
+
+### Pros:
+
+* Fast Linear Search: Buffer.indexOf is backed by highly optimized C++ substring algorithms, making it incredibly fast for linear scans and avoiding JavaScript string overhead.
+
+### Cons:
+
+* Event Loop Blocking: Buffer.indexOf is a synchronous, CPU-bound operation. It completely blocks Node's single thread while searching.
+* Memory Cost: Reading the file into a Node Buffer copies the entire file into V8's heap memory. This could easily crash the process with Out-of-Memory errors if the dataset was several gigabytes.
+
+## Golang
+
+### Pros:
+
+* Performance: Utilizes a pre-compiled Suffix Array to achieve logarithmic $O(\log N)$ binary search times. Searches complete in mere microseconds and scale to billions of digits.
+* Standalone: Compiles into a single, standalone binary executable. End-users don't need to install Go, Node, or Python to run it.
+* Concurrency: Fully thread-safe. You can spin up an HTTP server and serve thousands of concurrent search requests simultaneously using goroutines.
+
+### Cons:
+
+* Startup Time: Building the Suffix Array in memory requires a full sweep through the data. It takes several seconds to load the CLI upon startup.
+* Memory Heavy: The Suffix Array requires an integer pointer for every character in the string. The index consumes roughly 4x to 8x the RAM of the original text file.
