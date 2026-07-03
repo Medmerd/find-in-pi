@@ -50,6 +50,8 @@ def writeLogFile(number, index, match, runtime):
         with open(filePath, "r", encoding="utf-8") as file:
             try:
                 data = json.load(file)
+                if not isinstance(data, dict):
+                    data = {}
             except json.JSONDecodeError:
                 data = {}
     else:
